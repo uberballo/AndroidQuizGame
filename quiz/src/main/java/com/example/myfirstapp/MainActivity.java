@@ -1,5 +1,6 @@
 package com.example.myfirstapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean[] notAnswered;
     private int correctAnswers;
     private int falseAnswers;
+    private boolean mIsCheater;
 
     private Question[] mQuestionBank = new Question[]{
             new Question(R.string.question_australia, true),
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private int mCurrentIndex = 0;
+
 
 
     @Override
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex +1) % mQuestionBank.length;
+                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -87,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 mCurrentIndex = (mCurrentIndex +1) % mQuestionBank.length;
+                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -131,12 +136,17 @@ public class MainActivity extends AppCompatActivity {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
 
         int messageResId = 0;
-        if (userPressedTrue == answerIsTrue){
-            correctAnswers+=1;
-            messageResId = R.string.correct_toast;
-        } else{
-            falseAnswers+=1;
-            messageResId = R.string.incorrect_toast;
+        if (mIsCheater){
+            messageResId = R.string.judgment_toast;
+            falseAnswers++;
+        }else {
+            if (userPressedTrue == answerIsTrue) {
+                correctAnswers += 1;
+                messageResId = R.string.correct_toast;
+            } else {
+                falseAnswers += 1;
+                messageResId = R.string.incorrect_toast;
+            }
         }
 
         notAnswered[mCurrentIndex] = true;
@@ -155,6 +165,21 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
 
         }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (resultCode != Activity.RESULT_OK){
+            return;
+        }
+
+        if (requestCode == REQUEST_CODE_CHEAT){
+            if (data == null){
+                return;
+            }
+        }
+        mIsCheater = CheatActivity.wasAnswerShown(data);
 
     }
 

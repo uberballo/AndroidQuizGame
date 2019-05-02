@@ -11,6 +11,7 @@ import android.widget.TextView;
 public class CheatActivity extends AppCompatActivity {
 
     private static final  String EXTRA_ANSWER_IS_TRUE = "com.example.myFirstApp.answer_is_true";
+    private static final String EXTRA_ANSWER_SHOWN = "com.example.myFirstApp.answer_is_true";
     private boolean mAnswerIsTrue;
     private TextView mAnswerTextView;
     private Button mShowAnswerButton;
@@ -20,6 +21,10 @@ public class CheatActivity extends AppCompatActivity {
         Intent intent = new Intent(packageContext, CheatActivity.class);
         intent.putExtra(EXTRA_ANSWER_IS_TRUE, answerIsTrue);
         return intent;
+    }
+
+    public static boolean wasAnswerShown(Intent result){
+        return result.getBooleanExtra(EXTRA_ANSWER_SHOWN, false);
     }
 
     @Override
@@ -38,9 +43,16 @@ public class CheatActivity extends AppCompatActivity {
                 if (mAnswerIsTrue){
                     mAnswerTextView.setText(R.string.true_button);
                 } else{
-                    mShowAnswerButton.setText(R.string.false_button);
+                    mAnswerTextView.setText(R.string.false_button);
                 }
+                setAnswerShownResult(true);
             }
         });
+    }
+
+    private void setAnswerShownResult(boolean isAnswerShown){
+        Intent data = new Intent();
+        data.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
+        setResult(RESULT_OK, data);
     }
 }
