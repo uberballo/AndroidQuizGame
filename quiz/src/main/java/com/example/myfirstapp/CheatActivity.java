@@ -12,7 +12,10 @@ public class CheatActivity extends AppCompatActivity {
 
     private static final  String EXTRA_ANSWER_IS_TRUE = "com.example.myFirstApp.answer_is_true";
     private static final String EXTRA_ANSWER_SHOWN = "com.example.myFirstApp.answer_is_true";
+    private static final String KEY_ANSWER_SHOWN = "answer is shown";
+
     private boolean mAnswerIsTrue;
+    private boolean mAnswerIsShown;
     private TextView mAnswerTextView;
     private Button mShowAnswerButton;
 
@@ -34,20 +37,41 @@ public class CheatActivity extends AppCompatActivity {
 
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE,false);
 
+        if (savedInstanceState != null){
+                mAnswerIsShown = savedInstanceState.getBoolean(KEY_ANSWER_SHOWN,false);
+
+        }
+
         mAnswerTextView = (TextView) findViewById(R.id.answer_text_view);
 
         mShowAnswerButton = (Button) findViewById(R.id.show_answer_button);
+        if (mAnswerIsShown){
+            if (mAnswerIsTrue) {
+                mAnswerTextView.setText(R.string.true_button);
+            } else{
+                mAnswerTextView.setText(R.string.false_button);
+            }
+            mShowAnswerButton.setEnabled(false);
+        }
         mShowAnswerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mAnswerIsShown = true;
                 if (mAnswerIsTrue){
                     mAnswerTextView.setText(R.string.true_button);
                 } else{
                     mAnswerTextView.setText(R.string.false_button);
                 }
                 setAnswerShownResult(true);
+                mShowAnswerButton.setEnabled(false);
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean(KEY_ANSWER_SHOWN,mAnswerIsShown);
     }
 
     private void setAnswerShownResult(boolean isAnswerShown){

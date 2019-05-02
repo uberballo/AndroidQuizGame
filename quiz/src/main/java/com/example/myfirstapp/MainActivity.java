@@ -17,6 +17,12 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "index";
+    private static final String KEY_ANSWERED = "answered";
+    private static final String KEY_CHEATED= "cheater";
+
+
+
+
     private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button mTrueButton;
@@ -25,10 +31,12 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
     private TextView mQuestionTextView;
-    private boolean[] notAnswered;
     private int correctAnswers;
     private int falseAnswers;
     private boolean mIsCheater;
+
+    private boolean[] notAnswered;
+    private boolean[] mCheatedQuestions;
 
     private Question[] mQuestionBank = new Question[]{
             new Question(R.string.question_australia, true),
@@ -51,11 +59,24 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate(Bundle) called");
 
         notAnswered = new boolean[mQuestionBank.length];
+        mCheatedQuestions = new boolean[mQuestionBank.length];
         correctAnswers=0;
         falseAnswers=0;
 
         if (savedInstanceState != null){
-            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX,0);
+
+            if(savedInstanceState.containsKey(KEY_INDEX)) {
+                mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            }
+
+            if (savedInstanceState.containsKey(KEY_ANSWERED)){
+                notAnswered = savedInstanceState.getBooleanArray(KEY_ANSWERED);
+            }
+
+            if (savedInstanceState.containsKey(KEY_CHEATED)){
+                mCheatedQuestions = savedInstanceState.getBooleanArray(KEY_CHEATED);
+            }
+
         }
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
@@ -136,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
 
         int messageResId = 0;
-        if (mIsCheater){
+        if (mCheatedQuestions[mCurrentIndex]){
             messageResId = R.string.judgment_toast;
             falseAnswers++;
         }else {
@@ -158,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                 .show();
 
         if ((correctAnswers+falseAnswers)==mQuestionBank.length){
-            double correctPercentage= ((correctAnswers*1.0)/(mQuestionBank.length*1.0))*100;
+            double correctPercentage= ((correctAnswers*1.0)/(mQuestionBank.length))*100;
             String percentage = String.format("%.2f",correctPercentage);
             Toast toast = Toast.makeText(this,percentage+R.string.percentage, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.TOP,0,0);
@@ -179,8 +200,9 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         }
-        mIsCheater = CheatActivity.wasAnswerShown(data);
 
+        mIsCheater = CheatActivity.wasAnswerShown(data);
+        mCheatedQuestions[mCurrentIndex] = mIsCheater;
     }
 
     @Override
@@ -188,6 +210,8 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX,mCurrentIndex);
+        savedInstanceState.putBooleanArray(KEY_ANSWERED,notAnswered);
+        savedInstanceState.putBooleanArray(KEY_CHEATED,mCheatedQuestions);
     }
 
     @Override
