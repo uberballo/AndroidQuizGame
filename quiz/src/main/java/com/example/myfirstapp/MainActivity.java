@@ -31,8 +31,11 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
     private TextView mQuestionTextView;
+    private TextView mCheatsLeftTextView;
+
     private int correctAnswers;
     private int falseAnswers;
+    private int mCheatsLeft = 3;
     private boolean mIsCheater;
 
     private boolean[] notAnswered;
@@ -133,13 +136,19 @@ public class MainActivity extends AppCompatActivity {
         mCheatButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
-                Intent intent = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
+                if (mCheatsLeft>0) {
+                    boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+                    Intent intent = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
 
-                startActivityForResult(intent,REQUEST_CODE_CHEAT);
+                    startActivityForResult(intent, REQUEST_CODE_CHEAT);
+                } else{
+                    mCheatButton.setVisibility(View.INVISIBLE);
+                }
             }
         });
 
+        mCheatsLeftTextView = (TextView) findViewById(R.id.cheats_left_text_view);
+        mCheatsLeftTextView.setText("number of cheats left: "+mCheatsLeft);
 
         updateQuestion();
     }
@@ -151,6 +160,9 @@ public class MainActivity extends AppCompatActivity {
 
         mTrueButton.setEnabled(!notAnswered[mCurrentIndex]);
         mFalseButton.setEnabled(!notAnswered[mCurrentIndex]);
+        if (mCheatsLeft==0){
+            mCheatButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void checkAnswer(boolean userPressedTrue){
@@ -203,6 +215,8 @@ public class MainActivity extends AppCompatActivity {
 
         mIsCheater = CheatActivity.wasAnswerShown(data);
         mCheatedQuestions[mCurrentIndex] = mIsCheater;
+        mCheatsLeft--;
+        mCheatsLeftTextView.setText("Number of cheats left:"+mCheatsLeft);
     }
 
     @Override
