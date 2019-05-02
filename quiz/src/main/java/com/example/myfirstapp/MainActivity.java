@@ -18,9 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "index";
     private static final String KEY_ANSWERED = "answered";
-    private static final String KEY_CHEATED= "cheater";
-
-
+    private static final String KEY_CHEATED = "cheater";
 
 
     private static final int REQUEST_CODE_CHEAT = 0;
@@ -53,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private int mCurrentIndex = 0;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,20 +60,20 @@ public class MainActivity extends AppCompatActivity {
 
         notAnswered = new boolean[mQuestionBank.length];
         mCheatedQuestions = new boolean[mQuestionBank.length];
-        correctAnswers=0;
-        falseAnswers=0;
+        correctAnswers = 0;
+        falseAnswers = 0;
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
 
-            if(savedInstanceState.containsKey(KEY_INDEX)) {
+            if (savedInstanceState.containsKey(KEY_INDEX)) {
                 mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
             }
 
-            if (savedInstanceState.containsKey(KEY_ANSWERED)){
+            if (savedInstanceState.containsKey(KEY_ANSWERED)) {
                 notAnswered = savedInstanceState.getBooleanArray(KEY_ANSWERED);
             }
 
-            if (savedInstanceState.containsKey(KEY_CHEATED)){
+            if (savedInstanceState.containsKey(KEY_CHEATED)) {
                 mCheatedQuestions = savedInstanceState.getBooleanArray(KEY_CHEATED);
             }
 
@@ -86,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         mQuestionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCurrentIndex = (mCurrentIndex +1) % mQuestionBank.length;
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 mIsCheater = false;
                 updateQuestion();
             }
@@ -102,77 +99,77 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mFalseButton = (Button) findViewById(R.id.false_button);
-        mFalseButton.setOnClickListener(new View.OnClickListener(){
+        mFalseButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 checkAnswer(false);
             }
 
         });
 
         mNextButton = (ImageButton) findViewById(R.id.next_button);
-        mNextButton.setOnClickListener(new View.OnClickListener(){
+        mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                mCurrentIndex = (mCurrentIndex +1) % mQuestionBank.length;
+            public void onClick(View v) {
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 mIsCheater = false;
                 updateQuestion();
             }
         });
 
         mPrevButton = (ImageButton) findViewById(R.id.prev_button);
-        mPrevButton.setOnClickListener(new View.OnClickListener(){
+        mPrevButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                mCurrentIndex = (mCurrentIndex -1) %mQuestionBank.length;
-                if (mCurrentIndex == -1){
-                    mCurrentIndex = mQuestionBank.length-1;
+            public void onClick(View v) {
+                mCurrentIndex = (mCurrentIndex - 1) % mQuestionBank.length;
+                if (mCurrentIndex == -1) {
+                    mCurrentIndex = mQuestionBank.length - 1;
                 }
                 updateQuestion();
             }
         });
 
-        mCheatButton = (Button)findViewById(R.id.cheat_button);
-        mCheatButton.setOnClickListener(new View.OnClickListener(){
+        mCheatButton = (Button) findViewById(R.id.cheat_button);
+        mCheatButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                if (mCheatsLeft>0) {
+            public void onClick(View v) {
+                if (mCheatsLeft > 0) {
                     boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
                     Intent intent = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
 
                     startActivityForResult(intent, REQUEST_CODE_CHEAT);
-                } else{
+                } else {
                     mCheatButton.setVisibility(View.INVISIBLE);
                 }
             }
         });
 
         mCheatsLeftTextView = (TextView) findViewById(R.id.cheats_left_text_view);
-        mCheatsLeftTextView.setText("number of cheats left: "+mCheatsLeft);
+        mCheatsLeftTextView.setText(getString(R.string.number_of_cheats, mCheatsLeft));
 
         updateQuestion();
     }
 
 
-    private void updateQuestion(){
+    private void updateQuestion() {
         int question = mQuestionBank[mCurrentIndex].getTextResId();
         mQuestionTextView.setText(question);
 
         mTrueButton.setEnabled(!notAnswered[mCurrentIndex]);
         mFalseButton.setEnabled(!notAnswered[mCurrentIndex]);
-        if (mCheatsLeft==0){
+        if (mCheatsLeft == 0) {
             mCheatButton.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void checkAnswer(boolean userPressedTrue){
+    private void checkAnswer(boolean userPressedTrue) {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
 
         int messageResId = 0;
-        if (mCheatedQuestions[mCurrentIndex]){
+        if (mCheatedQuestions[mCurrentIndex]) {
             messageResId = R.string.judgment_toast;
             falseAnswers++;
-        }else {
+        } else {
             if (userPressedTrue == answerIsTrue) {
                 correctAnswers += 1;
                 messageResId = R.string.correct_toast;
@@ -190,11 +187,11 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT)
                 .show();
 
-        if ((correctAnswers+falseAnswers)==mQuestionBank.length){
-            double correctPercentage= ((correctAnswers*1.0)/(mQuestionBank.length))*100;
-            String percentage = String.format("%.2f",correctPercentage);
-            Toast toast = Toast.makeText(this,percentage+R.string.percentage, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.TOP,0,0);
+        if ((correctAnswers + falseAnswers) == mQuestionBank.length) {
+            double correctPercentage = ((correctAnswers * 1.0) / (mQuestionBank.length)) * 100;
+            String percentage = String.format("%.2f", correctPercentage);
+            Toast toast = Toast.makeText(this, percentage + R.string.percentage, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP, 0, 0);
             toast.show();
 
         }
@@ -202,13 +199,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        if (resultCode != Activity.RESULT_OK){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
             return;
         }
 
-        if (requestCode == REQUEST_CODE_CHEAT){
-            if (data == null){
+        if (requestCode == REQUEST_CODE_CHEAT) {
+            if (data == null) {
                 return;
             }
         }
@@ -216,16 +213,16 @@ public class MainActivity extends AppCompatActivity {
         mIsCheater = CheatActivity.wasAnswerShown(data);
         mCheatedQuestions[mCurrentIndex] = mIsCheater;
         mCheatsLeft--;
-        mCheatsLeftTextView.setText("Number of cheats left:"+mCheatsLeft);
+        mCheatsLeftTextView.setText(getString(R.string.number_of_cheats, mCheatsLeft));
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState){
+    public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
-        savedInstanceState.putInt(KEY_INDEX,mCurrentIndex);
-        savedInstanceState.putBooleanArray(KEY_ANSWERED,notAnswered);
-        savedInstanceState.putBooleanArray(KEY_CHEATED,mCheatedQuestions);
+        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+        savedInstanceState.putBooleanArray(KEY_ANSWERED, notAnswered);
+        savedInstanceState.putBooleanArray(KEY_CHEATED, mCheatedQuestions);
     }
 
     @Override
@@ -233,16 +230,19 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         Log.d(TAG, "onStart() called");
     }
+
     @Override
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume() called");
     }
+
     @Override
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause() called");
     }
+
     @Override
     public void onStop() {
         super.onStop();

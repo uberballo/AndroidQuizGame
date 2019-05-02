@@ -1,14 +1,15 @@
 <resources>
     <string name="app_name">Android appi </string>
     <string name="true_button">True</string>
-    <string name="false_button">false</string>
+    <string name="false_button">False</string>
     <string name="correct_toast">Correct!</string>
-    <string name="incorrect_toast">False!</string>
+    <string name="incorrect_toast">Wrong!</string>
     <string name="next_button">Next</string>
     <string name="next_button_description">Next button</string>
     <string name="prev_button">Prev</string>
-    <string name="prev_button_description">prev button</string>
+    <string name="prev_button_description">Prev button</string>
     <string name="percentage">% percentage</string>
+    <string name="number_of_cheats">Number of cheats left: %1$d</string>
 
     <string name="warning_text">Are you sure you want to do this?</string>
     <string name="show_answer_button">Show Answer</string>
