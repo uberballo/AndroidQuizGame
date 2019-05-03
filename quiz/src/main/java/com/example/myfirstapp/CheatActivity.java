@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -29,6 +30,7 @@ public class CheatActivity extends AppCompatActivity {
     private TextView mAnswerTextView;
     private TextView mApiLevelTextView;
     private Button mShowAnswerButton;
+    private ImageButton mBackFromCheatButton;
 
 
     public static Intent newIntent(Context packageContext, boolean answerIsTrue) {
@@ -99,6 +101,15 @@ public class CheatActivity extends AppCompatActivity {
             }
 
         });
+
+        mBackFromCheatButton = (ImageButton) findViewById(R.id.back_from_cheat_button);
+        mBackFromCheatButton.setOnClickListener( new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                CheatActivity.super.onBackPressed();
+            }
+        });
+
 
         mApiLevelTextView = (TextView) findViewById(R.id.api_level_text_view);
         mApiLevelTextView.setText("Your phones API level is " + Build.VERSION.SDK_INT);
