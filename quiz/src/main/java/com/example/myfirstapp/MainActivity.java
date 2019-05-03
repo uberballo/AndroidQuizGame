@@ -190,7 +190,8 @@ public class MainActivity extends AppCompatActivity {
         if ((correctAnswers + falseAnswers) == mQuestionBank.length) {
             double correctPercentage = ((correctAnswers * 1.0) / (mQuestionBank.length)) * 100;
             String percentage = String.format("%.2f", correctPercentage);
-            Toast toast = Toast.makeText(this, percentage + R.string.percentage, Toast.LENGTH_SHORT);
+            //percentage+=R.string.percentage;
+            Toast toast = Toast.makeText(this, percentage+"% correct", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.TOP, 0, 0);
             toast.show();
 
